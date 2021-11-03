@@ -2,7 +2,6 @@ let currentFilter = '1';
 let items = new Map();
 
 $(document).ready(function () {
-
     getFilters();
     getToDoList()
 });
