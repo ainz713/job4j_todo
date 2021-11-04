@@ -1,6 +1,15 @@
+CREATE TABLE users (
+                       id SERIAL PRIMARY KEY,
+                       username VARCHAR(255) NOT NULL UNIQUE,
+                       password VARCHAR(255) NOT NULL
+);
+
 create table items (
                        id serial primary key,
-                       description text
+                       description text,
+                       created TIMESTAMP NOT NULL,
+                       done BOOLEAN NOT NULL,
+                       user_id INT REFERENCES users(id) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS filters (

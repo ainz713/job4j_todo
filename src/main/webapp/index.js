@@ -1,10 +1,27 @@
 let currentFilter = '1';
 let items = new Map();
+let user = null;
 
 $(document).ready(function () {
+    $('#exit').attr("href", 'http://localhost:8080/todo/' + 'logout.do');
     getFilters();
-    getToDoList()
+    getUser()
+    getToDoList();
 });
+
+function getUser() {
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:8080/todo/' + 'user.do',
+        dataType: 'json'
+    }).done(function (data) {
+        user = data;
+        $('#username').text(user.username);
+        getToDoList();
+    }).fail(function (err) {
+        console.log(err);
+    });
+}
 
 function getFilters() {
     $("#selectFilter").empty();
@@ -29,7 +46,7 @@ function getToDoList() {
     $("#tbody").empty();
     $.ajax({
         type: 'GET',
-        url: 'http://localhost:8080/todo/' + 'items.do?filter_id=' + currentFilter,
+        url: 'http://localhost:8080/todo/' + 'items.do?filter_id=' + currentFilter + '&user_id=' + user.id,
         dataType: 'json'
     }).done(function (data) {
         for (let item of data) {
@@ -58,7 +75,8 @@ function addItem() {
         data: JSON.stringify({
             description: lDescription,
             created: new Date().toISOString(),
-            done: false
+            done: false,
+            user: user
         }),
         dataType: 'text'
     }).done(function(data) {
@@ -122,6 +140,26 @@ function deleteItem(itemId) {
     });
 }
 
+function updateItem(itemId) {
+    $('#notification').text('');
+    let item = items.get(itemId);
+    $.ajax({
+        type: 'POST',
+        url: 'http://localhost:8080/todo/' + 'updateItem',
+        data: JSON.stringify(item),
+        dataType: 'text'
+    }).done(function(data) {
+        if (data !== '200 OK') {
+            $('#notification').text('Failed to update task!');
+            console.log(data);
+        } else {
+            getToDoList();
+        }
+    }).fail(function(err) {
+        console.log(err);
+    });
+}
+
 function addRow(item) {
     const formattedDate = getFormattedDate(new Date(item.created));
     let row = `<tr class="fw-normal${item.done ? " del" : ""}" id="${"item" + item.id}">`
@@ -131,6 +169,8 @@ function addRow(item) {
         + `<td class="align-middle">${item.description}</td>`
         + `<td class="align-middle"><a href=""><i onclick="deleteItem(${item.id});
             return false;" class="fa fa-trash mr-3 text-danger"></i></a></td>`
+        + `<td class="align-middle"><a href=""><i onclick="updateItem(${item.id});
+            return false;" class="fa fa-refresh mr-3 text-danger"></i></a></td>`
         + `</tr>`;
     $('#table tbody').append(row);
 }
@@ -171,18 +211,5 @@ function getMonth(num) {
             return 'Dec';
         default :
             return ''
-    }
-}
-
-function getPriorityColor(value) {
-    switch (value) {
-        case 1 :
-            return 'bg-danger';
-        case 2 :
-            return 'bg-warning';
-        case 3 :
-            return 'bg-success';
-        default :
-            return 'bg-white';
     }
 }

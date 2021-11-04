@@ -28,13 +28,14 @@ public class ItemsServlet extends HttpServlet {
         OutputStream output = resp.getOutputStream();
         Store store = HbmStore.instOf();
         int filterId = Integer.parseInt(req.getParameter("filter_id"));
+        int userId = Integer.parseInt(req.getParameter("user_id"));
         Collection<Item> items = List.of();
         if (filterId == 2) {
-            items = store.findItemsByDone(true);
+            items = store.findItemsByDone(store.findUserById(userId), true);
         } else if (filterId == 3) {
-            items = store.findItemsByDone(false);
+            items = store.findItemsByDone(store.findUserById(2), false);
         } else {
-            items =  store.findAll();
+            items =  store.findAllItems(store.findUserById(userId));
         }
         String json = GSON.toJson(items);
         output.write(json.getBytes(StandardCharsets.UTF_8));

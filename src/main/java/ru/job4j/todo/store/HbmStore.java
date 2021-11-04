@@ -6,12 +6,10 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.query.Query;
 import ru.job4j.todo.model.Filter;
 import ru.job4j.todo.model.Item;
+import ru.job4j.todo.model.User;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -28,10 +26,6 @@ public class HbmStore implements Store, AutoCloseable {
 
     public static Store instOf() {
         return Lazy.INST;
-    }
-
-    @Override
-    public void init() {
     }
 
     private <T> T tx(final Function<Session, T> command) {
@@ -63,36 +57,9 @@ public class HbmStore implements Store, AutoCloseable {
     }
 
     @Override
-    public Collection<Item> findItemsByDone(boolean done) {
-        return this.tx(
-                session -> session.createQuery("from ru.job4j.todo.model.Item "
-                            + "where done = :pDone")
-                            .setParameter("pDone", done)
-                            .list()
-        );
-    }
-
-    @Override
     public Collection<Filter> findAllFilters() {
         return this.tx(
                 session -> session.createQuery("from ru.job4j.todo.model.Filter order by id").list()
-        );
-    }
-
-    @Override
-    public boolean replace(int id, Item item) {
-        return this.tx(
-                session -> {
-                    int result = session.createQuery("update Item set description = :description,"
-                            + " done = :done, "
-                            + "created = :created where id = :id")
-                            .setParameter("description", item.getDescription())
-                            .setParameter("done", item.getDone())
-                            .setParameter("created", item.getCreated())
-                            .setParameter("id", id)
-                            .executeUpdate();
-                    return result > 0;
-                }
         );
     }
 
@@ -109,26 +76,68 @@ public class HbmStore implements Store, AutoCloseable {
     }
 
     @Override
-    public List<Item> findAll() {
-        return this.tx(
-                session -> session.createQuery("from Item").list()
+    public Item update(Item item) {
+        return this.tx(session -> {
+            session.update(item);
+                    return item;
+                }
         );
     }
 
     @Override
-    public List<Item> findByDone(boolean key) {
+    public Collection<Item> findAllItems(User user) {
         return this.tx(
-                session -> session.createQuery(
-                        "from Item where done=:key").setParameter("key", key).list()
+                session -> session.createQuery("from Item where user = :pUser order by created")
+                        .setParameter("pUser", user).list()
         );
     }
 
     @Override
-    public Item findById(int id) throws SQLException {
-        return (Item) this.tx(
+    public List<Item> findItemsByDone(User user, boolean key) {
+        return this.tx(
                 session -> session.createQuery(
-                        "from Item where id=:key").setParameter("key", id).list()
+                        "from Item where done=:key AND user = :pUser"
+                                + " order by created")
+                        .setParameter("key", key)
+                        .setParameter("pUser", user)
+                        .list()
         );
+    }
+
+    @Override
+    public User findUserByUsername(String username) {
+        Object result = tx(session -> session.createQuery("FROM ru.job4j.todo.model.User WHERE username = :pUsername")
+                    .setParameter("pUsername", username)
+                    .setMaxResults(1)
+                    .uniqueResult());
+        return result == null ? null : (User) result;
+    }
+
+    @Override
+    public User findUserById(int id) {
+        Object result = null;
+        try {
+            result = tx(session -> session.createQuery(
+                        "from User where id=:pId").setParameter("pId", id)
+                    .setMaxResults(1)
+                    .uniqueResult());
+        } catch (Exception e) {
+
+        }
+        return result == null ? null : (User) result;
+    }
+
+    @Override
+    public User saveUser(User user) {
+        return this.tx(
+                session -> {
+                    if (user.getId() == 0) {
+                        session.save(user);
+                    } else {
+                        session.update(user);
+                    }
+                    return user;
+                });
     }
 
     @Override
