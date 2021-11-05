@@ -19,3 +19,15 @@ CREATE TABLE IF NOT EXISTS filters (
 
 INSERT INTO filters(name)
 VALUES ('All'), ('Completed'), ('Not completed');
+
+
+create table marki (
+                        id serial primary key,
+                        name varchar(2000)
+);
+
+create table models (
+                        id serial primary key,
+                        name varchar(2000),
+                        marka_id int references marki(id) not null
+);

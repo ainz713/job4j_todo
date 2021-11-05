@@ -17,6 +17,8 @@
         <property name="format_sql">true</property>
         <property name="use_sql_comments">true</property>
 
+        <mapping class="ru.job4j.todo.tomany.Marka" />
+        <mapping class="ru.job4j.todo.tomany.Model" />
         <mapping class="ru.job4j.todo.model.Item" />
         <mapping class="ru.job4j.todo.model.User" />
         <mapping class="ru.job4j.todo.model.Filter" />
