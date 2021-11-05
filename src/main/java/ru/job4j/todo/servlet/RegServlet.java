@@ -2,6 +2,7 @@ package ru.job4j.todo.servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.store.HbmStore;
 import ru.job4j.todo.store.Store;
@@ -22,22 +23,20 @@ public class RegServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/plain");
-        resp.setCharacterEncoding("UTF-8");
-        PrintWriter writer = new PrintWriter(new OutputStreamWriter(
-                resp.getOutputStream(), StandardCharsets.UTF_8));
+        JsonObject json = new JsonObject();
         User user = GSON.fromJson(req.getReader(), User.class);
         final Store store = HbmStore.instOf();
         store.saveUser(user);
         if (user.getId() == 0) {
-            writer.print("409 Conflict");
-            writer.flush();
-            return;
+            json.addProperty("result", false);
+        } else {
+            HttpSession session = req.getSession();
+            session.setAttribute("username", user.getUsername());
+            session.setAttribute("password", user.getPassword());
+            json.addProperty("result", true);
         }
-        HttpSession session = req.getSession();
-        session.setAttribute("username", user.getUsername());
-        session.setAttribute("password", user.getPassword());
-        writer.print("200 OK");
+        PrintWriter writer = new PrintWriter(resp.getOutputStream());
+        writer.println(json);
         writer.flush();
     }
 }

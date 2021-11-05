@@ -33,7 +33,7 @@ public class ItemsServlet extends HttpServlet {
         if (filterId == 2) {
             items = store.findItemsByDone(store.findUserById(userId), true);
         } else if (filterId == 3) {
-            items = store.findItemsByDone(store.findUserById(2), false);
+            items = store.findItemsByDone(store.findUserById(userId), false);
         } else {
             items =  store.findAllItems(store.findUserById(userId));
         }

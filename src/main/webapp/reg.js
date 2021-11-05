@@ -11,9 +11,9 @@ function signUp() {
             username: $('#username').val(),
             password: $('#password').val()
         }),
-        dataType: 'text'
+        dataType: 'json'
     }).done(function(data) {
-        if (data === '200 OK') {
+        if (data.result === true) {
             window.location.href = 'http://localhost:8080/todo/' + 'login.html';
         } else {
             $('#notification').text('User with this login already exists');

@@ -1,16 +1,3 @@
-// $(document).ready(function () {
-//     $.ajax({
-//         type: 'GET',
-//         url: 'http://localhost:8080/todo/' + 'login.do',
-//         dataType: 'json'
-//     }).done(function (data) {
-//         $('#username').val(data.username);
-//         $('#password').val(data.password);
-//     }).fail(function (err) {
-//         console.log(err);
-//     });
-// });
-
 function login() {
     $('#notification').text('');
     $.ajax({
