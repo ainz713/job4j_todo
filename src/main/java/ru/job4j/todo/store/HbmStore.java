@@ -110,21 +110,16 @@ public class HbmStore implements Store, AutoCloseable {
                     .setParameter("pUsername", username)
                     .setMaxResults(1)
                     .uniqueResult());
-        return result == null ? null : (User) result;
+        return (User) result;
     }
 
     @Override
     public User findUserById(int id) {
-        Object result = null;
-        try {
-            result = tx(session -> session.createQuery(
+            Object result = tx(session -> session.createQuery(
                         "from User where id=:pId").setParameter("pId", id)
                     .setMaxResults(1)
                     .uniqueResult());
-        } catch (Exception e) {
-
-        }
-        return result == null ? null : (User) result;
+        return (User) result;
     }
 
     @Override
