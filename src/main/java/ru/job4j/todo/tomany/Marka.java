@@ -13,7 +13,8 @@ public class Marka {
     private int id;
 
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "marka")
     private List<Model> models = new ArrayList<>();
 
     public static Marka of(String name) {
@@ -65,5 +66,13 @@ public class Marka {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Marka{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + '}';
     }
 }

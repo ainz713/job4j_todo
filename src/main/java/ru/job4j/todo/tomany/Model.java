@@ -12,6 +12,10 @@ public class Model {
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "marka_id")
+    private Marka marka;
+
     public static Model of(String name) {
         Model model = new Model();
         model.name = name;
@@ -49,5 +53,14 @@ public class Model {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Model{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", marka=" + marka
+                + '}';
     }
 }
