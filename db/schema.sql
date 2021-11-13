@@ -28,6 +28,15 @@ create table marki (
 
 create table models (
                         id serial primary key,
+                        name varchar(2000)
+);
+
+create table authors (
+                       id serial primary key,
+                       name varchar(2000)
+);
+
+create table books (
+                        id serial primary key,
                         name varchar(2000),
-                        marka_id int references marki(id) not null
 );
