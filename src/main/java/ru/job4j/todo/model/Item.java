@@ -1,8 +1,9 @@
 package ru.job4j.todo.model;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,8 @@ public class Item implements Comparable<Item> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String description;
-    private Timestamp created;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created;
     private boolean done;
 
     @ManyToOne
@@ -25,9 +27,9 @@ public class Item implements Comparable<Item> {
     public Item() {
     }
 
-    public Item(String description, Timestamp created, boolean done, User user) {
+    public Item(String description, boolean done, User user) {
         this.description = description;
-        this.created = created;
+        this.created = new Date(System.currentTimeMillis());
         this.done = done;
         this.user = user;
     }
@@ -76,11 +78,11 @@ public class Item implements Comparable<Item> {
         this.description = description;
     }
 
-    public Timestamp getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 

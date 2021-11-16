@@ -16,6 +16,7 @@
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
         <property name="use_sql_comments">true</property>
+        <property name="hibernate.jdbc.time_zone">Asia/Tokyo</property>
 
         <mapping class="ru.job4j.todo.manytomany.Author" />
         <mapping class="ru.job4j.todo.manytomany.Book" />
