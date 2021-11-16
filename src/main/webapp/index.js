@@ -1,11 +1,13 @@
 let currentFilter = '1';
 let items = new Map();
+let categories = new Map();
 let user = null;
 
 $(document).ready(function () {
     $('#exit').attr("href", 'http://localhost:8080/todo/' + 'logout.do');
     getFilters();
-    getUser()
+    getCategories();
+    getUser();
     getToDoList();
 });
 
@@ -41,6 +43,26 @@ function getFilters() {
     });
 }
 
+function getCategories() {
+    categories.clear();
+    $("#selectCategories").empty();
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:8080/todo/' + 'categories.do',
+        dataType: 'json'
+    }).done(function (data) {
+        for (let category of data) {
+            categories.set(category.id, category);
+            $('#selectCategories').append($('<option>', {
+                value: category.id,
+                text: category.name
+            }));
+        }
+    }).fail(function (err) {
+        console.log(err);
+    });
+}
+
 function getToDoList() {
     items.clear();
     $("#tbody").empty();
@@ -69,6 +91,11 @@ function changeFilter() {
 function addItem() {
     $('#notification').text('');
     let lDescription = $('#description').val();
+    let lCategories = $('#selectCategories').find(":selected").map(function () {
+        return $(this).val();
+    }).get().map(function (key) {
+        return categories.get(parseInt(key));
+    });
     $.ajax({
         type: 'POST',
         url: 'http://localhost:8080/todo/' + 'items.do',
@@ -76,7 +103,8 @@ function addItem() {
             description: lDescription,
             created: new Date().toISOString(),
             done: false,
-            user: user
+            user: user,
+            categories: lCategories
         }),
         dataType: 'text'
     }).done(function(data) {
@@ -162,11 +190,15 @@ function updateItem(itemId) {
 
 function addRow(item) {
     const formattedDate = getFormattedDate(new Date(item.created));
+    const lCategories = item.categories.map(function (category) {
+        return category['name'];
+    }).join(', ');
     let row = `<tr class="fw-normal${item.done ? " del" : ""}" id="${"item" + item.id}">`
         + `<th><input class="form-check-input me-2" type="checkbox" 
         value="" aria-label="..." onchange="changeCheckBox(${item.id}, this)" ${item.done ? "checked" : ""}/></th>`
         + `<td><span class="ms-2">${formattedDate}</span></td>`
         + `<td class="align-middle">${item.description}</td>`
+        + `<td class="align-middle">${lCategories}</td>`
         + `<td class="align-middle"><a href=""><i onclick="deleteItem(${item.id});
             return false;" class="fa fa-trash mr-3 text-danger"></i></a></td>`
         + `<td class="align-middle"><a href=""><i onclick="updateItem(${item.id});

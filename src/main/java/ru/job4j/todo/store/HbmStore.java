@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Filter;
 import ru.job4j.todo.model.Item;
 import ru.job4j.todo.model.User;
@@ -64,6 +65,13 @@ public class HbmStore implements Store, AutoCloseable {
     }
 
     @Override
+    public Collection<Category> findAllCategory() {
+        return this.tx(
+                session -> session.createQuery("from ru.job4j.todo.model.Category order by id").list()
+        );
+    }
+
+    @Override
     public boolean delete(int id) {
         return this.tx(
                 session -> {
@@ -87,8 +95,10 @@ public class HbmStore implements Store, AutoCloseable {
     @Override
     public Collection<Item> findAllItems(User user) {
         return this.tx(
-                session -> session.createQuery("from Item where user = :pUser order by created")
-                        .setParameter("pUser", user).list()
+                session -> session.createQuery("from Item i "
+                        + "left join fetch i.categories c where i.user = :pUser order by i.created")
+                        .setParameter("pUser", user)
+                        .list()
         );
     }
 
@@ -96,8 +106,8 @@ public class HbmStore implements Store, AutoCloseable {
     public List<Item> findItemsByDone(User user, boolean key) {
         return this.tx(
                 session -> session.createQuery(
-                        "from Item where done=:key AND user = :pUser"
-                                + " order by created")
+                        "from Item i left join fetch i.categories c where i.done=:key AND i.user = :pUser"
+                                + " order by i.created")
                         .setParameter("key", key)
                         .setParameter("pUser", user)
                         .list()
@@ -106,7 +116,8 @@ public class HbmStore implements Store, AutoCloseable {
 
     @Override
     public User findUserByUsername(String username) {
-        Object result = tx(session -> session.createQuery("FROM ru.job4j.todo.model.User WHERE username = :pUsername")
+        Object result = tx(session -> session.createQuery("FROM ru.job4j.todo.model.User"
+                + " WHERE username = :pUsername")
                     .setParameter("pUsername", username)
                     .setMaxResults(1)
                     .uniqueResult());

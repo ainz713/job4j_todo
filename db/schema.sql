@@ -20,6 +20,13 @@ CREATE TABLE IF NOT EXISTS filters (
 INSERT INTO filters(name)
 VALUES ('All'), ('Completed'), ('Not completed');
 
+CREATE TABLE IF NOT EXISTS categories (
+                                       id SERIAL PRIMARY KEY,
+                                       name VARCHAR(255)
+    );
+INSERT INTO categories(name)
+VALUES ('Job'), ('Family'), ('Sport');
+
 
 create table marki (
                         id serial primary key,

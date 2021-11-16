@@ -1,5 +1,6 @@
 package ru.job4j.todo.store;
 
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Filter;
 import ru.job4j.todo.model.Item;
 import ru.job4j.todo.model.User;
@@ -24,5 +25,7 @@ public interface Store extends AutoCloseable {
     Collection<Item> findItemsByDone(User user, boolean done);
 
     Collection<Filter> findAllFilters();
+
+    Collection<Category> findAllCategory();
 }
 

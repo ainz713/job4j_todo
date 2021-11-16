@@ -51,6 +51,10 @@
     <servlet-name>FiltersServlet</servlet-name>
     <servlet-class>ru.job4j.todo.servlet.FiltersServlet</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>CategoryServlet</servlet-name>
+    <servlet-class>ru.job4j.todo.servlet.CategoryServlet</servlet-class>
+  </servlet>
 
   <servlet-mapping>
     <servlet-name>LoginServlet</servlet-name>
@@ -67,6 +71,10 @@
   <servlet-mapping>
     <servlet-name>FiltersServlet</servlet-name>
     <url-pattern>/filters.do</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CategoryServlet</servlet-name>
+    <url-pattern>/categories.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ItemsServlet</servlet-name>

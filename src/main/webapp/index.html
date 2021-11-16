@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="index.css">
 
     <title>TO DO LIST</title>
 </head>
@@ -43,6 +42,17 @@
                 <button type="submit" class="btn btn-dark mb-2">Add a new task</button>
             </div>
         </div>
+
+        <div class="form-row justify-content-md-center">
+            <label class="col-form-label col-sm-0 text-dark" for="selectCategories"
+                   style="font-weight: 800">Categories:</label>
+            <div class="col-sm-5">
+                <select class="form-control" name="selectCategories" id="selectCategories" multiple required
+                        oninvalid="this.setCustomValidity('Выберите категорию')"
+                        oninput="this.setCustomValidity('')">
+                </select>
+            </div>
+        </div>
     </form>
 
     <div class="row justify-content-center align-items-center pt-1">
@@ -66,8 +76,9 @@
             <thead>
             <tr>
                 <th scope="col" style="width: 1%"></th>
-                <th scope="col" style="width: 20%">Creation date</th>
-                <th scope="col" style="width: 58%">Description</th>
+                <th scope="col" style="width: 15%">Creation date</th>
+                <th scope="col" style="width: 43%">Description</th>
+                <th scope="col" style="width: 15%">Categories</th>
                 <th scope="col" style="width: 10%">Delete</th>
                 <th scope="col" style="width: 10%">Update</th>
                 <th scope="col" style="width: 1%"></th>
