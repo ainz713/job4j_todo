@@ -26,5 +26,8 @@
         <mapping class="ru.job4j.todo.model.Category" />
         <mapping class="ru.job4j.todo.model.User" />
         <mapping class="ru.job4j.todo.model.Filter" />
+        <mapping class="ru.job4j.todo.driverscars.Car" />
+        <mapping class="ru.job4j.todo.driverscars.Driver" />
+        <mapping class="ru.job4j.todo.driverscars.Engine" />
     </session-factory>
 </hibernate-configuration>
