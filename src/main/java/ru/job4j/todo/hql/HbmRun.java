@@ -9,6 +9,7 @@ import org.hibernate.query.Query;
 
 public class HbmRun {
     public static void main(String[] args) {
+        Candidate rsl = null;
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure().build();
         try {
@@ -24,6 +25,7 @@ public class HbmRun {
             session.save(two);
             session.save(three);
 
+            /*
             Query query = session.createQuery("from Candidate s where s.id = :fId");
             query.setParameter("fId", 1);
             System.out.println(query.uniqueResult());
@@ -45,6 +47,14 @@ public class HbmRun {
             session.createQuery("delete from Candidate where id = :fId3")
             .setParameter("fId3", 3)
             .executeUpdate();
+            */
+
+            rsl = session.createQuery(
+                    "select distinct st from Candidate st "
+                            + "join fetch st.db a "
+                            + "join fetch a.vc b "
+                            + "where st.id = :sId", Candidate.class
+            ).setParameter("sId", 1).uniqueResult();
 
             session.getTransaction().commit();
             session.close();
@@ -53,5 +63,6 @@ public class HbmRun {
         } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
+        System.out.println(rsl);
     }
 }

@@ -15,6 +15,9 @@ public class Candidate {
 
     private int salary;
 
+    @OneToOne
+    private DataBase db;
+
     public static Candidate of(String name, String experience, int salary) {
         Candidate candidate = new Candidate();
         candidate.name = name;
